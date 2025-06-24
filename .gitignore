@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.env
+*.log
+*.pot
+*.pyc
+
+# Virtual environment
+venv/
+env/
+
+# Django specific
+db.sqlite3
+media/
+staticfiles/
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Pycharm
+.idea/
+
+# Migrations (optional: only if you don't want to track them)
+**/migrations/*.py
+!**/migrations/__init__.py

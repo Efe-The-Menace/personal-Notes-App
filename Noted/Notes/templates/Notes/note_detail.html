@@ -1,0 +1,7 @@
+{%extends 'Notes/base.html'%}
+{%block content%}
+<p><small>Last Modified: {{ note.last_modified }}</small></p>
+    <h1>{{ note.title }}</h1>
+    <p>{{ note.body }}</p>
+    <p><small>Created at: {{ note.time_posted }}</small></p>
+{% endblock content%}

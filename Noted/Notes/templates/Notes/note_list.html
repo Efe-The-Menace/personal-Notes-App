@@ -1,0 +1,6 @@
+{%extends 'Notes/base.html'%}
+{%block content%}
+    {%for items in list%}
+        {{items.title}}
+    {% endfor %}
+{% endblock content%}
