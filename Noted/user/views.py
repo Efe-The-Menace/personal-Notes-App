@@ -39,7 +39,7 @@ def logout_user(request):
         
 @login_required
 def user_profile(request):
-    notes = Note_data.objects.filter(user=request.user)#.order_by('-last_modified')[:5]
+    notes = Note_data.objects.filter(user=request.user).order_by('-last_modified')[:5]
     total_notes = Note_data.objects.filter(user=request.user).count()
     return render(request, 'user/user_profile.html',{
                       notes: 'notes',
