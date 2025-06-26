@@ -1,0 +1,23 @@
+{% extends 'Notes/base.html' %}
+
+{% block content %}
+  <h2>Welcome, {{ user.username }}</h2>
+  <a href="{% url 'profile_update' %}" class="btn btn-outline-secondary">Edit Profile</a>
+
+
+  <p>You have <strong>{{ total_notes }}</strong> notes.</p>
+
+  <h4>Recent Notes</h4>
+  <ul class="list-group mb-3">
+    {% for note in notes %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{% url 'note_detail' note.pk %}">{{ note.title }}</a>
+        <small class="text-muted">{{ note.last_modified|date:"M d, Y" }}</small>
+      </li>
+    {% empty %}
+      <li class="list-group-item">No recent notes.</li>
+    {% endfor %}
+  </ul>
+
+  <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
+{% endblock %}
