@@ -1,6 +1,52 @@
-{%extends 'Notes/base.html'%}
-{%block content%}
-    {%for items in list%}
-        {{items.title}}
-    {% endfor %}
-{% endblock content%}
+{% extends 'Notes/base.html' %}
+
+{% block content %}
+  <a href="{% url 'new_note' %}" class="btn btn-success mb-3">+ New Note</a>
+  <h2>Your Notes</h2>
+
+  {% for note in list %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ note.title }}</h5>
+        <p class="card-text">
+            {{ note.body|truncatechars:10|linebreaksbr }}
+        </p>
+        <a href="{% url 'note_detail' note.pk %}">Read more...</a>
+
+
+        <p class="text-muted">Last modified: {{ note.last_modified }}</p>
+
+        <a href="{% url 'note_update' note.pk %}" class="btn btn-primary btn-sm">Edit</a>
+
+        <!-- Delete button opens modal -->
+        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ note.id }}">
+          Delete
+        </button>
+
+        <!-- Delete confirmation modal -->
+        <div class="modal fade" id="deleteModal{{ note.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ note.id }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST" action="{% url 'note_delete' note.pk %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteModalLabel{{ note.id }}">Confirm Delete</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete "{{ note.title }}"?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-danger">Yes, delete</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No notes found.</p>
+  {% endfor %}
+{% endblock %}
