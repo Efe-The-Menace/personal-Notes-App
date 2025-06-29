@@ -12,7 +12,7 @@ def register_user(request):
         form = reg_form(request.POST)
         if form.is_valid():
             form.save()
-            messages.success('Account created, You can proceed to Log In.')
+            messages.success(request,'Account created, You can proceed to Log In.')
             return redirect('login')
     else:
         form = reg_form()
