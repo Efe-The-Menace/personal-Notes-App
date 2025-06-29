@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Note_data
 from .forms import note_form
 from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 
 
 @login_required
@@ -25,7 +27,7 @@ def note_detail(request, pk):
     return render(request, 'Notes/note_detail.html', {'note': note})
 
 @login_required
-def create_note(request):
+def create_note(request):   
     if request.method == 'POST':
         form = note_form(request.POST)
         if form.is_valid():
@@ -58,5 +60,3 @@ def delete_note(request, pk):
         note.delete()
         return redirect('note_list')
     return render(request, 'Notes/note_confirm_delete.html', {'note':note})
-
-

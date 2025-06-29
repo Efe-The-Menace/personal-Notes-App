@@ -1,59 +1,56 @@
 {% extends 'Notes/base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-4">
-
-  <!-- Search and New Note -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <form method="GET" class="w-50">
-      <div class="input-group">
-        <input type="text" name="q" class="form-control" placeholder="Search notes..." value="{{ query|default:'' }}">
-        <button type="submit" class="btn btn-outline-secondary">Search</button>
-      </div>
-    </form>
-    <a href="{% url 'new_note' %}" class="btn btn-primary">+ New Note</a>
-  </div>
-
-  <!-- Notes List -->
-  {% for note in page_obj %}
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">{{ note.title }}</h5>
-        <p class="card-text">{{ note.body|truncatechars:100|linebreaksbr }}</p>
-        <div class="d-flex justify-content-between align-items-center">
-          <small class="text-muted">Last updated {{ note.last_modified|date:"M d, Y H:i" }}</small>
-          <div>
-            <a href="{% url 'note_detail' note.pk %}" class="btn btn-sm btn-outline-info">View</a>
-            <a href="{% url 'note_update' note.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-            <a href="{% url 'note_delete' note.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-          </div>
-        </div>
-      </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Your Notes</h2>
+        <a href="{% url 'note_create' %}" class="btn btn-primary">New Note</a>
     </div>
-  {% empty %}
-    <p>No notes found.</p>
-  {% endfor %}
 
-  <!-- Pagination -->
-  <nav class="mt-4">
-    <ul class="pagination justify-content-center">
-      {% if page_obj.has_previous %}
-        <li class="page-item">
-          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Previous</a>
-        </li>
-      {% endif %}
+    <form method="get" class="mb-4">
+        <input type="text" name="q" class="form-control" placeholder="Search notes..." value="{{ query }}">
+    </form>
 
-      <li class="page-item disabled">
-        <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-      </li>
+    {% if page_obj %}
+        <ul class="list-group">
+            {% for note in page_obj %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ note.title }}</strong> - 
+                        {{ note.body|truncatewords:10 }}
+                    </div>
+                    <div>
+                        <a href="{% url 'note_detail' note.id %}" class="btn btn-sm btn-outline-secondary">View</a>
+                        <a href="{% url 'note_update' note.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
+                        <!-- Deletion handled on detail page -->
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
 
-      {% if page_obj.has_next %}
-        <li class="page-item">
-          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next</a>
-        </li>
-      {% endif %}
-    </ul>
-  </nav>
-
+        <!-- Pagination -->
+        <nav class="mt-3">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <p>No notes found.</p>
+    {% endif %}
 </div>
 {% endblock %}
