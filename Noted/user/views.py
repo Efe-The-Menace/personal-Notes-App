@@ -18,24 +18,25 @@ def register_user(request):
         form = reg_form()
     return render(request, 'user/register.html', {'form':form})
     
+#Alternative, User defined login view
+
+# def login_user(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(data= request.POST)
+#         if form.is_valid():
+#             user = form.get_user()
+#             login(request, user)
+#             messages.success(request, f'You are now logged in as {user}')
+#             return redirect('note_list')
+#     else:
+#         form = AuthenticationForm()
+#     return render(request, 'user/login.html', {'form': form})
     
-def login_user(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(data= request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            messages.success(request, f'You are now logged in as {user}')
-            return redirect('note_list')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'user/login.html', {'form': form})
-    
-    
-def logout_user(request):
-    logout(request)
-    messages.success(request, "You have been logged out.")
-    return redirect('login')
+    # ALternative, User defined Logout view
+# def logout_user(request):
+#     logout(request)
+#     messages.success(request, "You have been logged out.")
+#     return redirect('login')
         
 @login_required
 def user_profile(request):
@@ -48,7 +49,6 @@ def user_profile(request):
 
 @login_required
 def update_user(request):
-    user = request.user     
     if request.method == 'POST':
         form = UpdateUserForm(request.POST, instance=request.user)
         if form.is_valid():

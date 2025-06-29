@@ -4,8 +4,7 @@ from .models import Note_data
 from .forms import note_form
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
-from django.http import JsonResponse
-
+from django.contrib import messages
 
 @login_required
 def note_list(request):
@@ -55,8 +54,12 @@ def update_view(request, pk):
 
 @login_required
 def delete_note(request, pk):
-    note = get_object_or_404(Note_data, pk=pk, user= request.user)
+    note = get_object_or_404(Note_data, pk=pk, user=request.user)
+
     if request.method == 'POST':
         note.delete()
+        messages.success(request, f'Successfully Deleted {note}')
         return redirect('note_list')
-    return render(request, 'Notes/note_confirm_delete.html', {'note':note})
+
+
+    return render(request, 'Notes/note_confirm_delete.html', {'note': note})
