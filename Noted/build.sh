@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Exit the script if any command fails
 set -o errexit
 
 pip install -r requirements.txt
