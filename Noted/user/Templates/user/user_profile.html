@@ -1,23 +1,43 @@
 {% extends 'Notes/base.html' %}
+{% load static %}
 
 {% block content %}
-  <h2>Welcome, {{ user.username }}</h2>
-  <a href="{% url 'profile_update' %}" class="btn btn-outline-secondary">Edit Profile</a>
+<div class="row mt-5">
+  <!-- Profile Card -->
+  <div class="col-md-4 mb-4">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <img src="{{ profiler.image.url }}" alt="Profile picture" class="rounded-circle mb-3" width="120" height="120">
+        <h5 class="card-title">{{ request.user.username }}</h5>
+        <p class="card-text text-muted">{{ request.user.email }}</p>
+        <p class="text-secondary small">Total Notes: <strong>{{ total_notes }}</strong></p>
+        <a href="{% url 'profile_update'%}" class="btn btn-outline-primary btn-sm mt-2">Edit Profile</a>
+      </div>
+    </div>
+  </div>
 
-
-  <p>You have <strong>{{ total_notes }}</strong> notes.</p>
-
-  <h4>Recent Notes</h4>
-  <ul class="list-group mb-3">
-    {% for note in notes %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <a href="{% url 'note_detail' note.pk %}">{{ note.title }}</a>
-        <small class="text-muted">{{ note.last_modified|date:"M d, Y" }}</small>
-      </li>
-    {% empty %}
-      <li class="list-group-item">No recent notes.</li>
-    {% endfor %}
-  </ul>
-
-  <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
+  <!-- Recent Notes -->
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0">Recent Notes</h5>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for note in notes %}
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong>{{ note.title }}</strong><br>
+                <small class="text-muted">Last updated: {{ note.last_modified|date:"M d, Y H:i" }}</small>
+              </div>
+              <a href="{% url 'note_detail' note.id %}" class="btn btn-sm btn-outline-secondary">View</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-center text-muted">You have no notes yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import reg_form
 from django.contrib.auth.forms import AuthenticationForm
@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from Notes.models import Note_data
 from django.contrib.auth.decorators import login_required
 from .forms import UpdateUserForm
-# Create your views here.
+from .models import profile_data
 def register_user(request):
     if request.method == 'POST':
         form = reg_form(request.POST)
@@ -42,9 +42,11 @@ def register_user(request):
 def user_profile(request):
     notes = Note_data.objects.filter(user=request.user).order_by('-last_modified')[:5]
     total_notes = Note_data.objects.filter(user=request.user).count()
+    profiler = get_object_or_404(profile_data, user=request.user)
     return render(request, 'user/user_profile.html',{
-                      notes: 'notes',
-                   total_notes: 'total_notes'
+                      'notes': notes,
+                   'total_notes': total_notes,
+                   'profiler': profiler
     })
 
 @login_required

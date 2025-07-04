@@ -13,7 +13,7 @@
       <ul class="navbar-nav ms-auto">
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <span class="nav-link">Hello, {{ user.username }}</span>
+            <span class="nav-link">Hello, <a href="{%url 'profile'%}">{{ user.username }}</a></span>
           </li>
           <li class="nav-item">
             <form method="POST" action="{% url 'logout' %}" class="d-inline">
