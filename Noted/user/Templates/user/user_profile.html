@@ -9,6 +9,7 @@
       <div class="card-body">
         <img src="{{ profiler.image.url }}" alt="Profile picture" class="rounded-circle mb-3" width="120" height="120">
         <h5 class="card-title">{{ request.user.username }}</h5>
+        <p class="card-text text-muted">{{ profiler.bio }}</p>
         <p class="card-text text-muted">{{ request.user.email }}</p>
         <p class="text-secondary small">Total Notes: <strong>{{ total_notes }}</strong></p>
         <a href="{% url 'profile_update'%}" class="btn btn-outline-primary btn-sm mt-2">Edit Profile</a>
