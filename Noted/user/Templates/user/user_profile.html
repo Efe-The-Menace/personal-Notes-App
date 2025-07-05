@@ -1,43 +1,33 @@
 {% extends 'Notes/base.html' %}
-{% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<div class="row mt-5">
-  <!-- Profile Card -->
-  <div class="col-md-4 mb-4">
-    <div class="card shadow-sm text-center">
-      <div class="card-body">
-        <img src="{{ profiler.image.url }}" alt="Profile picture" class="rounded-circle mb-3" width="120" height="120">
-        <h5 class="card-title">{{ request.user.username }}</h5>
-        <p class="card-text text-muted">{{ profiler.bio }}</p>
-        <p class="card-text text-muted">{{ request.user.email }}</p>
-        <p class="text-secondary small">Total Notes: <strong>{{ total_notes }}</strong></p>
-        <a href="{% url 'profile_update'%}" class="btn btn-outline-primary btn-sm mt-2">Edit Profile</a>
-      </div>
-    </div>
-  </div>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
 
-  <!-- Recent Notes -->
-  <div class="col-md-8">
-    <div class="card shadow-sm">
-      <div class="card-header bg-white">
-        <h5 class="mb-0">Recent Notes</h5>
+      <div class="text-center mb-4">
+        <img src="{{ user.profile_data.image.url }}" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
+        <h3 class="mt-3">{{ user.username }}</h3>
+        <p class="text-muted">{{ user.email }}</p>
       </div>
-      <ul class="list-group list-group-flush">
-        {% for note in notes %}
-          <li class="list-group-item">
-            <div class="d-flex justify-content-between">
-              <div>
-                <strong>{{ note.title }}</strong><br>
-                <small class="text-muted">Last updated: {{ note.last_modified|date:"M d, Y H:i" }}</small>
-              </div>
-              <a href="{% url 'note_detail' note.id %}" class="btn btn-sm btn-outline-secondary">View</a>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title border-bottom pb-2">Profile Info</h5>
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              {{ u_form|crispy }}
             </div>
-          </li>
-        {% empty %}
-          <li class="list-group-item text-center text-muted">You have no notes yet.</li>
-        {% endfor %}
-      </ul>
+            <div class="mb-3">
+              {{ p_form|crispy }}
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update</button>
+          </form>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

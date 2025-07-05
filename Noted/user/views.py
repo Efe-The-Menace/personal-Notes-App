@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import reg_form
+from .forms import reg_form, UpdateUserForm, ProfileUpdateForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from Notes.models import Note_data
 from django.contrib.auth.decorators import login_required
-from .forms import UpdateUserForm
 from .models import profile_data
+
+
 def register_user(request):
     if request.method == 'POST':
         form = reg_form(request.POST)
@@ -40,23 +41,25 @@ def register_user(request):
         
 @login_required
 def user_profile(request):
-    notes = Note_data.objects.filter(user=request.user).order_by('-last_modified')[:5]
-    total_notes = Note_data.objects.filter(user=request.user).count()
-    profiler = get_object_or_404(profile_data, user=request.user)
-    return render(request, 'user/user_profile.html',{
-                      'notes': notes,
-                   'total_notes': total_notes,
-                   'profiler': profiler
-    })
-
-@login_required
-def update_user(request):
     if request.method == 'POST':
-        form = UpdateUserForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile successfully updated.')
+        u_form = UpdateUserForm(request.POST,
+                                instance=request.user)
+        p_form = ProfileUpdateForm(request.POST,
+                                   request.FILES,
+                                   instance=request.user.profile_data)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request,'Your account has been updated!')
             return redirect('profile')
+        
     else:
-        form = UpdateUserForm()        
-    return render(request, 'user/update_user.html', {'form': form})
+        u_form = UpdateUserForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile_data)
+        
+    
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+    }
+    return render(request, 'user/user_profile.html', context)

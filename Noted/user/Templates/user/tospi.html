@@ -1,34 +1,52 @@
-{%extends 'Notes/base.html'%}
-{%block content%}
-  <nav class="navbar navbar-light bg-white shadow-sm px-4">
-    <span class="navbar-brand mb-0 h1">NotesApp</span>
-    <div>
-      <a class="me-3 text-decoration-none" href="{% url 'login' %}">Login</a>
-      <a class="text-decoration-none" href="{% url 'register' %}">Register</a>
-    </div>
-  </nav>
+@login_required
+def user_profile(request):
+    notes = Note_data.objects.filter(user=request.user).order_by('-last_modified')[:5]
+    total_notes = Note_data.objects.filter(user=request.user).count()
+    profiler = get_object_or_404(profile_data, user=request.user)
+    return render(request, 'user/user_profile.html',{
+                      'notes': notes,
+                   'total_notes': total_notes,
+                   'profiler': profiler
+    })
 
-  <div class="d-flex justify-content-center align-items-center" style="min-height: 90vh;">
-    <div class="card p-4 shadow" style="width: 100%; max-width: 400px;">
-      <h3 class="text-center mb-4">Login</h3>
-      <form method="POST">
-        {% csrf_token %}
-        <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input type="text" name="username" class="form-control" required id="username">
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" name="password" class="form-control" required id="password">
-        </div>
-        <div class="d-grid">
-          <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-      </form>
-      <div class="mt-3 text-center">
-        <small class="text-muted">Don't have an account? <a href="{% url 'register' %}">Register</a></small>
+@login_required
+def update_user(request):
+    if request.method == 'POST':
+        form = UpdateUserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile successfully updated.')
+            return redirect('profile')
+    else:
+        form = UpdateUserForm()        
+    return render(request, 'user/update_user.html', {'form': form})
+
+
+
+
+
+
+
+{% extends 'Notes/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="content-section">
+    <div class="media">
+      <img class="rounded-circle account-img" src="{{user.profile_data.image.url }}">
+      <div class="media-body">
+        <h2 class="account-heading">{{ user.username }}</h2>
+        <p class="text-secondary">{{ user.email }}</p>
       </div>
     </div>
+    <form method="POST" enctype="multipart/froom-data">
+        {% csrf_token %}
+        <fieldset>
+          <legend class="border-bottom mb-4">Profile Info</legend>
+          {{ u_form|crispy }}
+          {{ p_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary w-100 mt-3">Update</button>
+    </form>
   </div>
-
-{%endblock content%}
+{% endblock %}
