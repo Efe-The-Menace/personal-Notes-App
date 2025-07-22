@@ -1,14 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-'''A title
-
-A body/content
-
-A timestamp
-
-Maybe a user, if you want login later'''
-
 class Note_data(models.Model):
     title = models.CharField(max_length=100)
     body = models.TextField()
